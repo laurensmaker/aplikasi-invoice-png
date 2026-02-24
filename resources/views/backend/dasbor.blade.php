@@ -9,7 +9,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-3 pb-1">
                                 <div class="flex-grow-1 me-3">
                                     {{-- <h3 class="body-font fw-bold fs-3 mb-2">{{ $totalEksportir }}</h3> --}}
-                                    <span>Total Eksportir</span>
+                                    <span>INVOICE</span>
                                 </div>
                                 <div class="flex-shrink-0">
                                     <div class="icon transition">
@@ -34,7 +34,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-3 pb-1">
                                 <div class="flex-grow-1 me-3">
                                     {{-- <h3 class="body-font fw-bold fs-3 mb-2">{{ $totalPengajuan }}</h3> --}}
-                                    <span>Total Pengajuan</span>
+                                    <span>PACKING LIST</span>
                                 </div>
                                 <div class="flex-shrink-0">
                                     <div class="icon transition">

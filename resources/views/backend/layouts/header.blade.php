@@ -38,9 +38,9 @@
                                             <div class="flex-grow-1 ms-3">
                                                 <div class="d-flex align-items-center justify-content-between">
                                                     <div class="d-none d-xxl-block">
-                                                        <span class="degeneration">{{ Auth::user()->level_u }}</span>
+                                                        <span class="degeneration">Admin</span>
                                                         <div class="d-flex align-content-center">
-                                                            <h3>{{ Auth::user()->name_u }}</h3>
+                                                            <h3>Admin PNG</h3>
                                                             <div class="down">
                                                                 <i data-feather="chevron-down"></i>
                                                             </div>
@@ -53,7 +53,7 @@
                                             
                                             <li>
                                                 <a class="dropdown-item d-flex align-items-center text-body"
-                                                    href="{{ route('logout') }}">
+                                                    href="">
                                                     <i data-feather="log-out"></i>
                                                     <span class="ms-2">Logout</span>
                                                 </a>

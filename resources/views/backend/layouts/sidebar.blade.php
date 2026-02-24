@@ -22,27 +22,15 @@
                     <span class="menu-title-text">DATA</span>
                 </li>
                     <li class="menu-item">
+                        <a href="{{ route('invoice.index') }}" class="menu-link">
+                            <i data-feather="user" class="menu-icon tf-icons"></i>
+                            <span class="title">Data Invoice</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
                         <a href="" class="menu-link">
                             <i data-feather="user" class="menu-icon tf-icons"></i>
-                            <span class="title">Data User</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="" class="menu-link">
-                            <i data-feather="globe" class="menu-icon tf-icons"></i>
-                            <span class="title">Data Negara</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="" class="menu-link">
-                            <i data-feather="compass" class="menu-icon tf-icons"></i>
-                            <span class="title">Data Provinsi</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="" class="menu-link">
-                            <i data-feather="minus-square" class="menu-icon tf-icons"></i>
-                            <span class="title">Data Kabupaten</span>
+                            <span class="title">Data Packing List</span>
                         </a>
                     </li>
                     <li class="menu-item">
@@ -63,30 +51,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="menu-item">
-                        <a href="" class="menu-link">
-                            <i data-feather="pocket" class="menu-icon tf-icons"></i>
-                            <span class="title">Cara Perdagangan</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="" class="menu-link">
-                            <i data-feather="user" class="menu-icon tf-icons"></i>
-                            <span class="title">Cara Pembayaran</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="" class="menu-link">
-                            <i data-feather="user" class="menu-icon tf-icons"></i>
-                            <span class="title">Kategori Ekspor</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="" class="menu-link">
-                            <i data-feather="user" class="menu-icon tf-icons"></i>
-                            <span class="title">Jenis Ekspor</span>
-                        </a>
-                    </li>
+                    
                 
                 
                
