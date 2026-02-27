@@ -75,7 +75,7 @@
 
                     <div class="col-lg-2 mb-3">
                         <label>Qty</label>
-                        <input type="number" name="qty" class="form-control" required>
+                        <input type="number" name="qty" id="qty" class="form-control" required>
                     </div>
 
                     <div class="col-lg-4 mb-3">
@@ -95,6 +95,19 @@
                         <input type="hidden" name="total_price" id="total_price">
                     </div>
 
+                    {{-- FIELD BARU --}}
+                    <div class="col-lg-3 mb-3">
+                        <label>Weight per Item (kg)</label>
+                        <input type="number" step="0.01" name="weight_kg" id="weight_kg" class="form-control" required>
+                    </div>
+
+                    <div class="col-lg-3 mb-3">
+                        <label>Total Weight (kg)</label>
+                        <input type="text" id="total_weight_display" class="form-control" readonly>
+                        <input type="hidden" name="total_weight" id="total_weight">
+                    </div>
+                    {{-- END FIELD BARU --}}
+
                     <div class="col-lg-12 mt-3">
                         <button class="btn btn-primary">Tambah Item</button>
                         <a href="{{ route('invoice.index') }}" class="btn btn-success">Selesai</a>
@@ -104,71 +117,79 @@
             </form>
 
 
-            {{-- ======================== --}}
-            {{-- DAFTAR ITEM SUDAH ADA --}}
-            {{-- ======================== --}}
-            <hr>
-            <h5 class="mt-4">Daftar Item</h5>
+    {{-- ======================== --}}
+    {{-- DAFTAR ITEM SUDAH ADA --}}
+    {{-- ======================== --}}
+    <hr>
+    <h5 class="mt-4">Daftar Item</h5>
 
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Qty</th>
-                        <th>Description</th>
-                        <th>Unit Price</th>
-                        <th>Total Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($invoice->items as $item)
-                    <tr>
-                        <td>{{ $item->qty }}</td>
-                        <td>{{ $item->description }}</td>
-                        <td>{{ number_format($item->unit_price) }}</td>
-                        <td>{{ number_format($item->total_price) }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Qty</th>
+                <th>Description</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+                <th>Weight/Item (kg)</th>
+                <th>Total Weight (kg)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($invoice->items as $item)
+            <tr>
+                <td>{{ $item->qty }}</td>
+                <td>{{ $item->description }}</td>
+                <td>{{ number_format($item->unit_price) }}</td>
+                <td>{{ number_format($item->total_price) }}</td>
+                <td>{{ (float) $item->weight_kg }}</td>
+                <td>{{ $item->total_weight }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 
-        @endif
+@endif
 
     </div>
 </div>
 <script>
-    const qtyInput = document.querySelector('input[name="qty"]');
+    const qtyInput       = document.getElementById('qty');
     const unitPriceDisplay = document.getElementById('unit_price_display');
-    const unitPriceHidden = document.getElementById('unit_price');
+    const unitPriceHidden  = document.getElementById('unit_price');
     const totalPriceDisplay = document.getElementById('total_price_display');
-    const totalPriceHidden = document.getElementById('total_price');
+    const totalPriceHidden  = document.getElementById('total_price');
+    const weightKgInput     = document.getElementById('weight_kg');
+    const totalWeightDisplay = document.getElementById('total_weight_display');
+    const totalWeightHidden  = document.getElementById('total_weight');
 
-    // Format angka ribuan pakai koma (1,000,000)
     function formatNumber(num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    // Hitung total otomatis
     function calculateTotal() {
-        let qty = parseInt(qtyInput.value) || 0;
+        let qty       = parseFloat(qtyInput.value) || 0;
         let unitPrice = parseInt(unitPriceHidden.value) || 0;
-        let total = qty * unitPrice;
+        let weightKg  = parseFloat(weightKgInput.value) || 0;
 
+        // Hitung total price
+        let total = qty * unitPrice;
         totalPriceDisplay.value = formatNumber(total);
-        totalPriceHidden.value = total;
+        totalPriceHidden.value  = total;
+
+        // Hitung total weight
+        let totalWeight = qty * weightKg;
+        totalWeightDisplay.value = totalWeight % 1 === 0 ? totalWeight : totalWeight.toFixed(2);
+        totalWeightHidden.value  = totalWeight;
     }
 
-    // Event untuk Unit Price
     unitPriceDisplay.addEventListener('input', function () {
-        let value = this.value.replace(/[^0-9]/g, "");  
-        this.value = formatNumber(value);               
-        unitPriceHidden.value = value;                  
-
+        let value    = this.value.replace(/[^0-9]/g, "");
+        this.value   = formatNumber(value);
+        unitPriceHidden.value = value;
         calculateTotal();
     });
 
-    // Event untuk Qty
-    qtyInput.addEventListener('input', function () {
-        calculateTotal();
-    });
+    qtyInput.addEventListener('input', calculateTotal);
+    weightKgInput.addEventListener('input', calculateTotal);
 </script>
 @endsection

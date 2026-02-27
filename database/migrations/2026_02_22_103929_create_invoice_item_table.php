@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('description');          
             $table->decimal('unit_price', 20, 2);        
             $table->decimal('total_price', 20, 2);
+            $table->decimal('weight_kg');        
+            $table->decimal('total_weight', 20, 2);        
             $table->timestamps();
         });
     }

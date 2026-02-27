@@ -103,14 +103,29 @@
                                                             <i data-feather="eye"></i> Detail
                                                         </button>
 
+                                                        <button
+                                                            class="btn btn-secondary btn-sm text-white btn-packing"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#modalPackingList"
+                                                            data-invoice-id="{{ $item->id }}"
+                                                            data-invoice-number="{{ $item->invoice_number }}">
+                                                            <i data-feather="package"></i> <br> Buat Packing List
+                                                        </button>
+
+                                                        <a href="{{ route('invoice.print', $item->id) }}"
+                                                        class="btn btn-success btn-sm text-white"
+                                                        target="_blank">
+                                                            <i data-feather="printer"></i> Cetak
+                                                        </a>
+
                                                         {{-- TOMBOL EDIT --}}
                                                         <a class="btn btn-warning btn-sm text-white"
                                                             href="{{ route('invoice.edit', $item->id) }}">
-                                                            <i data-feather="edit-3"></i> Edit
+                                                            <i data-feather="edit-3" ></i> Edit
                                                         </a>
 
                                                         {{-- TOMBOL HAPUS --}}
-                                                        <a href="#" class="btn btn-danger btn-sm btn-delete"
+                                                        {{-- <a href="#" class="btn btn-danger btn-sm btn-delete"
                                                             data-id="{{ $item->id }}"
                                                             data-nama="{{ $item->invoice_number }}">
                                                             <i data-feather="trash-2"></i> Hapus
@@ -120,7 +135,7 @@
                                                             method="POST" style="display: none;">
                                                             @csrf
                                                             @method('DELETE')
-                                                        </form>
+                                                        </form> --}}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -158,7 +173,7 @@
                     <div class="col-md-6">
                         <div class="card border-0 bg-light h-100">
                             <div class="card-body">
-                                <p class="text-muted small mb-1">DARI</p>
+                                <p class="text-muted small mb-1">FROM</p>
                                 <h6 class="fw-bold" id="modal-from-company">-</h6>
                                 <p class="text-muted mb-0 small" id="modal-from-address">-</p>
                             </div>
@@ -168,7 +183,7 @@
                     <div class="col-md-6">
                         <div class="card border-0 bg-light h-100">
                             <div class="card-body">
-                                <p class="text-muted small mb-1">KEPADA</p>
+                                <p class="text-muted small mb-1">TO</p>
                                 <h6 class="fw-bold" id="modal-to-company">-</h6>
                                 <p class="text-muted mb-0 small" id="modal-to-address">-</p>
                             </div>
@@ -222,6 +237,10 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="ri-close-line me-1"></i> Tutup
                 </button>
+                {{-- Tombol cetak dari modal --}}
+                {{-- <a id="btn-print-from-modal" href="#" class="btn btn-success text-white" target="_blank">
+                    <i class="ri-printer-line me-1"></i> Cetak PDF
+                </a> --}}
                 <a id="btn-edit-from-modal" href="#" class="btn btn-warning text-white">
                     <i class="ri-edit-line me-1"></i> Edit Invoice
                 </a>
@@ -229,6 +248,62 @@
         </div>
     </div>
 </div>
+
+{{-- ===================== MODAL PACKING LIST ===================== --}}
+<div class="modal fade" id="modalPackingList" tabindex="-1" aria-labelledby="modalPackingListLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable">
+        <div class="modal-content">
+
+            {{-- HEADER --}}
+            <div class="modal-header" style="background: linear-gradient(135deg, #2e7d32, #1b5e20);">
+                <h5 class="modal-title text-white" id="modalPackingListLabel">
+                    <i class="ri-archive-line me-2"></i>
+                    Buat Packing List — <span id="modal-packing-invoice-number"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body p-4">
+
+                {{-- INFO INVOICE --}}
+                <div class="alert alert-info mb-3">
+                    <i class="ri-information-line me-1"></i>
+                    Membuat packing list untuk Invoice: <strong id="modal-packing-invoice-number"></strong>
+                </div>
+
+                {{-- PACKING DATE --}}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Packing Date <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="packing-date">
+                </div>
+
+                {{-- PACKING NUMBER --}}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Packing Number <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="packing-number" placeholder="Contoh: PL-2024-001">
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="ri-close-line me-1"></i> Batal
+                </button>
+                <button type="button" class="btn btn-success text-white" id="btn-simpan-packing">
+                    <i class="ri-save-line me-1"></i> Simpan Packing List
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<form id="form-packing" action="{{ route('packinglist.store') }}" method="POST" style="display:none;">
+    @csrf
+    <input type="hidden" name="invoice_id" id="form-invoice-id">
+    <input type="hidden" name="packing_date" id="form-packing-date">
+    <input type="hidden" name="packing_number" id="form-packing-number">
+</form>
 
 <script>
 // ======== BUKA MODAL DETAIL ========
@@ -325,6 +400,73 @@ document.querySelectorAll('.btn-delete').forEach(button => {
             }
         });
     });
+});
+
+// ======== BUKA MODAL PACKING LIST ========
+document.querySelectorAll('.btn-packing').forEach(button => {
+    button.addEventListener('click', function () {
+        const invoiceNumber = this.dataset.invoiceNumber;
+        const items         = JSON.parse(this.dataset.items || '[]');
+
+        // Set judul modal
+        document.getElementById('modal-packing-invoice-number').textContent = invoiceNumber;
+
+        // Reset form
+        document.getElementById('packing-date').value   = '';
+        document.getElementById('packing-number').value = '';
+
+        // Isi dropdown item
+        const select = document.getElementById('select-invoice-item');
+        select.innerHTML = '<option value="">-- Pilih Item --</option>';
+
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value       = item.id;
+            option.textContent = `${item.description} (Qty: ${item.qty})`;
+            select.appendChild(option);
+        });
+    });
+});
+
+// ======== BUKA MODAL PACKING LIST ========
+document.querySelectorAll('.btn-packing').forEach(button => {
+    button.addEventListener('click', function () {
+        const invoiceId     = this.dataset.invoiceId;
+        const invoiceNumber = this.dataset.invoiceNumber;
+
+        // Set judul modal
+        document.getElementById('modal-packing-invoice-number').textContent = invoiceNumber;
+
+        // Simpan invoice id ke tombol simpan sebagai data attribute
+        document.getElementById('btn-simpan-packing').dataset.invoiceId = invoiceId;
+
+        // Reset form
+        document.getElementById('packing-date').value   = '';
+        document.getElementById('packing-number').value = '';
+    });
+});
+
+// ======== SIMPAN PACKING LIST ========
+document.getElementById('btn-simpan-packing').addEventListener('click', function () {
+    const invoiceId     = this.dataset.invoiceId;
+    const packingDate   = document.getElementById('packing-date').value;
+    const packingNumber = document.getElementById('packing-number').value;
+
+    // Validasi
+    if (!packingDate) {
+        Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Tanggal packing wajib diisi.' });
+        return;
+    }
+    if (!packingNumber.trim()) {
+        Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Nomor packing wajib diisi.' });
+        return;
+    }
+
+    // Isi form dan submit
+    document.getElementById('form-invoice-id').value    = invoiceId;
+    document.getElementById('form-packing-date').value  = packingDate;
+    document.getElementById('form-packing-number').value = packingNumber;
+    document.getElementById('form-packing').submit();
 });
 </script>
 @endsection

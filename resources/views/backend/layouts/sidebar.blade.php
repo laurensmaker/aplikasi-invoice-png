@@ -28,7 +28,7 @@
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="" class="menu-link">
+                        <a href="{{ route('packing-list.index') }}" class="menu-link">
                             <i data-feather="user" class="menu-icon tf-icons"></i>
                             <span class="title">Data Packing List</span>
                         </a>

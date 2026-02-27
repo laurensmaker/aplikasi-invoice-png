@@ -14,13 +14,8 @@ return new class extends Migration
         Schema::create('packinglist', function (Blueprint $table) {
             $table->id();
             $table->date('packing_date');                 
-            $table->string('packing_number');      
-            $table->string('from_company');
-            $table->string('from_address');
-            $table->string('to_company');
-            $table->string('to_address');
-            $table->integer('total_weight');              
-            $table->string('signature')->nullable(); 
+            $table->string('packing_number');  
+            $table->foreignId('invoice_id')->constrained('invoice')->onDelete('cascade'); 
             $table->timestamps();
         });
     }

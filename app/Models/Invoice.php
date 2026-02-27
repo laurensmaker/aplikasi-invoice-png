@@ -23,4 +23,9 @@ class Invoice extends Model
     {
         return $this->hasMany(InvoiceItem::class, 'invoice_id');
     }
+
+    public function packingList()
+    {
+        return $this->hasOne(PackingList::class, 'invoice_id');
+    }
 }

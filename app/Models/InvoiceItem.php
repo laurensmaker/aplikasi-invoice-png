@@ -14,6 +14,8 @@ class InvoiceItem extends Model
         'description',
         'unit_price',
         'total_price',
+        'weight_kg',
+        'total_weight'
     ];
 
     public function invoice()
