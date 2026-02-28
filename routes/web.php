@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PackingListController;
+use App\Http\Controllers\SuratJalanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,3 +24,10 @@ Route::post('/packinglist', [PackingListController::class, 'store'])->name('pack
 
 Route::get('/packing-list/{id}/print', [PackingListController::class, 'printPdf'])->name('packing-list.print');
 Route::delete('/packing-list/{id}', [PackingListController::class, 'destroy'])->name('packing-list.destroy');
+
+Route::get('/surat-jalan', [SuratJalanController::class, 'index'])->name('surat-jalan.index');
+Route::post('/surat-jalan', [SuratJalanController::class, 'store'])->name('surat-jalan.store');
+Route::get('/surat-jalan/{id}/edit', [SuratJalanController::class, 'edit'])->name('surat-jalan.edit');
+Route::put('/surat-jalan/{id}', [SuratJalanController::class, 'update'])->name('surat-jalan.update');
+Route::delete('/surat-jalan/{id}', [SuratJalanController::class, 'destroy'])->name('surat-jalan.destroy');
+Route::get('/surat-jalan/{id}/print', [SuratJalanController::class, 'print'])->name('surat-jalan.print');

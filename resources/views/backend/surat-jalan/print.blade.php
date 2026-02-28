@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Packing List {{ $packing->packing_number }}</title>
+    <title>Surat Jalan {{ $suratJalan->surat_jalan_number }}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -32,7 +32,7 @@
         .brand-name {
             font-size: 26px;
             font-weight: 700;
-            color: #2e7d32;
+            color: #37474f;
             letter-spacing: 1px;
         }
 
@@ -42,15 +42,15 @@
             margin-top: 2px;
         }
 
-        .packing-title {
+        .sj-title {
             font-size: 28px;
             font-weight: 700;
-            color: #2e7d32;
+            color: #37474f;
             text-align: right;
             letter-spacing: 2px;
         }
 
-        .packing-meta {
+        .sj-meta {
             text-align: right;
             font-size: 12px;
             color: #555;
@@ -61,7 +61,7 @@
         /* ===== DIVIDER ===== */
         .divider {
             border: none;
-            border-top: 2px solid #2e7d32;
+            border-top: 2px solid #37474f;
             margin: 20px 0;
         }
 
@@ -81,7 +81,7 @@
         .label-small {
             font-size: 10px;
             font-weight: 700;
-            color: #2e7d32;
+            color: #37474f;
             letter-spacing: 1.5px;
             text-transform: uppercase;
             margin-bottom: 5px;
@@ -100,6 +100,34 @@
             line-height: 1.6;
         }
 
+        /* ===== INFO KENDARAAN ===== */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        .info-table td {
+            padding: 8px 12px;
+            font-size: 12px;
+            border: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+
+        .info-table .info-label {
+            font-weight: 700;
+            color: #37474f;
+            background-color: #eceff1;
+            width: 30%;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-table .info-value {
+            color: #333;
+        }
+
         /* ===== TABEL ITEMS ===== */
         .items-table {
             width: 100%;
@@ -108,7 +136,7 @@
         }
 
         .items-table thead tr {
-            background-color: #2e7d32;
+            background-color: #37474f;
             color: #fff;
         }
 
@@ -125,7 +153,7 @@
         }
 
         .items-table tbody tr:nth-child(even) {
-            background-color: #f2f9f2;
+            background-color: #f5f5f5;
         }
 
         .items-table tbody td {
@@ -140,7 +168,7 @@
 
         /* ===== TOTAL ===== */
         .total-row-final {
-            background-color: #2e7d32;
+            background-color: #37474f;
             color: #fff;
             font-weight: 700;
             font-size: 14px;
@@ -199,15 +227,15 @@
     <table class="header-table">
         <tr>
             <td style="width: 50%;">
-                <div class="brand-name">{{ $packing->invoice->from_company }}</div>
-                <div class="brand-sub">{{ $packing->invoice->from_address }}</div>
+                <div class="brand-name">{{ $suratJalan->invoice->from_company }}</div>
+                <div class="brand-sub">{{ $suratJalan->invoice->from_address }}</div>
             </td>
             <td style="width: 50%;">
-                <div class="packing-title">PACKING LIST</div>
-                <div class="packing-meta">
-                    <strong>No Packing:</strong> {{ $packing->packing_number }}<br>
-                    <strong>Tanggal:</strong> {{ \Carbon\Carbon::parse($packing->packing_date)->format('d F Y') }}<br>
-                    {{-- <strong>Ref. Invoice:</strong> {{ $packing->invoice->invoice_number }} --}}
+                <div class="sj-title">SURAT JALAN</div>
+                <div class="sj-meta">
+                    <strong>No. Surat Jalan:</strong> {{ $suratJalan->surat_jalan_number }}<br>
+                    <strong>No. PEB:</strong> {{ $suratJalan->nomor_peb }}<br>
+                    <strong>Tanggal PEB:</strong> {{ \Carbon\Carbon::parse($suratJalan->tanggal_peb)->format('d F Y') }}
                 </div>
             </td>
         </tr>
@@ -220,14 +248,29 @@
         <tr>
             <td style="padding-right: 20px;">
                 <div class="label-small">FROM</div>
-                <div class="company-name">{{ $packing->invoice->from_company }}</div>
-                <div class="company-address">{{ $packing->invoice->from_address }}</div>
+                <div class="company-name">{{ $suratJalan->invoice->from_company }}</div>
+                <div class="company-address">{{ $suratJalan->invoice->from_address }}</div>
             </td>
             <td style="padding-left: 20px; border-left: 2px solid #e0e0e0;">
                 <div class="label-small">TO</div>
-                <div class="company-name">{{ $packing->invoice->to_company }}</div>
-                <div class="company-address">{{ $packing->invoice->to_address }}</div>
+                <div class="company-name">{{ $suratJalan->invoice->to_company }}</div>
+                <div class="company-address">{{ $suratJalan->invoice->to_address }}</div>
             </td>
+        </tr>
+    </table>
+
+    {{-- ===== INFO KENDARAAN ===== --}}
+    <table class="info-table">
+        <tr>
+            <td class="info-label">Nomor Polisi</td>
+            <td class="info-label">Nama Supir</td>
+            <td class="info-label">Jenis Kendaraan</td>            
+          
+        </tr>
+        <tr>
+            <td class="info-value" style="color: #c62828; font-weight: 700;">{{ $suratJalan->nomor_polisi }}</td>
+            <td class="info-value">{{ $suratJalan->nama_supir }}</td>
+            <td class="info-value">{{ $suratJalan->jenis_kendaraan }}</td>
         </tr>
     </table>
 
@@ -243,12 +286,12 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($packing->invoice->items as $index => $item)
+            @forelse ($suratJalan->invoice->items as $index => $item)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td>{{ $item->description }}</td>
                     <td class="text-center">{{ $item->qty }}</td>
-                    <td class="text-center">{{ $item->weight_kg + 0 }}</td>
+                    <td class="text-center">{{ number_format($item->weight_kg, 2) }}</td>
                     <td class="text-center">{{ number_format($item->total_weight, 2) }}</td>
                 </tr>
             @empty
@@ -263,11 +306,11 @@
             <tr class="total-row-final">
                 <td colspan="2" class="text-right"><strong>TOTAL</strong></td>
                 <td class="text-center">
-                    <strong>{{ $packing->invoice->items->sum('qty') }}</strong>
+                    <strong>{{ $suratJalan->invoice->items->sum('qty') }}</strong>
                 </td>
                 <td></td>
                 <td class="text-center">
-                    <strong>{{ number_format($packing->invoice->items->sum('total_weight'), 2) }} kg</strong>
+                    <strong>{{ number_format($suratJalan->invoice->items->sum('total_weight'), 2) }} kg</strong>
                 </td>
             </tr>
         </tfoot>
@@ -276,20 +319,27 @@
     {{-- ===== TANDA TANGAN ===== --}}
     <div class="signature-section">
         <table class="signature-table">
-            <tr>
-{{--                 
+            {{-- <tr>
                 <td>
-                    <div class="signature-line">Diterima Oleh</div>
-                    <div class="signature-title">{{ $packing->invoice->to_company }}</div>
-                </td> --}}
-            </tr>
+                    <div class="signature-line">Pengirim</div>
+                    <div class="signature-title">{{ $suratJalan->invoice->from_company }}</div>
+                </td>
+                <td>
+                    <div class="signature-line">Supir</div>
+                    <div class="signature-title">{{ $suratJalan->nama_supir }}</div>
+                </td>
+                <td>
+                    <div class="signature-line">Penerima</div>
+                    <div class="signature-title">{{ $suratJalan->invoice->to_company }}</div>
+                </td>
+            </tr> --}}
         </table>
     </div>
 
     {{-- ===== FOOTER ===== --}}
     <div class="footer">
         Dokumen ini digenerate secara otomatis pada {{ \Carbon\Carbon::now()->format('d F Y, H:i') }} WIB.
-        Packing List No: {{ $packing->packing_number }} | Ref. Invoice: {{ $packing->invoice->invoice_number }}
+        Surat Jalan No: {{ $suratJalan->surat_jalan_number }} | No. PEB: {{ $suratJalan->nomor_peb }}
     </div>
 
 </div>

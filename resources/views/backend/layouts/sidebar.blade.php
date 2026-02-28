@@ -21,19 +21,25 @@
                 <li class="menu-title small text-uppercase">
                     <span class="menu-title-text">DATA</span>
                 </li>
-                    <li class="menu-item">
+                   <li class="menu-item">
                         <a href="{{ route('invoice.index') }}" class="menu-link">
-                            <i data-feather="user" class="menu-icon tf-icons"></i>
+                            <i data-feather="file-text" class="menu-icon tf-icons"></i>
                             <span class="title">Data Invoice</span>
                         </a>
                     </li>
                     <li class="menu-item">
                         <a href="{{ route('packing-list.index') }}" class="menu-link">
-                            <i data-feather="user" class="menu-icon tf-icons"></i>
+                            <i data-feather="package" class="menu-icon tf-icons"></i>
                             <span class="title">Data Packing List</span>
                         </a>
                     </li>
                     <li class="menu-item">
+                        <a href="{{ route('surat-jalan.index') }}" class="menu-link">
+                            <i data-feather="truck" class="menu-icon tf-icons"></i>
+                            <span class="title">Data Surat Jalan</span>
+                        </a>
+                    </li>
+                    {{-- <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle active">
                             <i data-feather="columns" class="menu-icon tf-icons"></i>
                             <span class="title">Kantor Pabean</span>
@@ -50,7 +56,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li> --}}
                     
                 
                 

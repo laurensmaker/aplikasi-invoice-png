@@ -64,7 +64,7 @@
                                         <span class="badge bg-info text-dark">
                                             {{ $packing->invoice->items->count() ?? 0 }} item
                                         </span>
-                                    </td>
+                                    </td>                                    
                                     <td>
                                         <span class="fw-semibold">
                                             {{ number_format($packing->invoice->items->sum('total_weight'), 2) }} kg
