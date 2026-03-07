@@ -29,15 +29,21 @@
                         <input type="text" name="invoice_number" class="form-control" required>
                     </div>
 
-                    <div class="col-lg-6 mb-3">
+                    {{-- <div class="col-lg-6 mb-3">
                         <label>From Company</label>
-                        <input type="text" name="from_company" class="form-control" required>
-                    </div>
+                        <select name="from_company" class="form-control" required>
+                            <option value="" disabled selected>-- Pilih Perusahaan --</option>
+                            <option value="PT. AMASU AMPROYAB PAPUA" selected>PT. AMASU AMPROYAB PAPUA</option>
+                            <option value="PT. BINTANG KEJORA">PT. BINTANG KEJORA</option>
+                        </select>
+                    </div> --}}
+                    <input type="hidden" name="from_company" value="PT. AMASU AMPROYAB PAPUA">
+                    <input type="hidden" name="from_address" value="HAMADI TANJUNG 2/6 ARGAPURA KOTA JAYAPURA, PAPUA INDONESIA">
 
-                    <div class="col-lg-6 mb-3">
+                    {{-- <div class="col-lg-6 mb-3">
                         <label>From Address</label>
                         <input type="text" name="from_address" class="form-control" required>
-                    </div>
+                    </div> --}}
 
                     <div class="col-lg-6 mb-3">
                         <label>To Company</label>

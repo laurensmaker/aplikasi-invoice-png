@@ -101,6 +101,16 @@
                     <input type="text" id="total_price_display" class="form-control" readonly>
                     <input type="hidden" name="total_price" id="total_price">
                 </div>
+                <div class="col-lg-2 mb-3">
+                    <label>Weight/pcs (kg)</label>
+                    <input type="number" step="0.01" name="weight_kg" id="weight_kg" class="form-control" required>
+                </div>
+
+                <div class="col-lg-2 mb-3">
+                    <label>Total Weight (kg)</label>
+                    <input type="text" id="total_weight_display" class="form-control" readonly>
+                    <input type="hidden" name="total_weight" id="total_weight">
+                </div>
 
                 <div class="col-lg-12 mt-2">
                     <button class="btn btn-primary">+ Tambah Item</button>
@@ -135,9 +145,27 @@
                     <td>{{ $item->description }}</td>
                     <td>Rp {{ number_format($item->unit_price) }}</td>
                     <td>Rp {{ number_format($item->total_price) }}</td>
-                    <td>
+                    {{-- <td>
                         <form action="{{ route('invoice.item.destroy', $item->id) }}" method="POST"
                             onsubmit="return confirm('Hapus item ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger btn-sm">Hapus</button>
+                        </form>
+                    </td> --}}
+                    {{-- Di dalam <tbody>, ganti bagian <td> Aksi menjadi: --}}
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="openEditModal(
+                            {{ $item->id }},
+                            {{ $item->qty }},
+                            '{{ addslashes($item->description) }}',
+                            {{ $item->weight_kg }},
+                            {{ $item->unit_price }},
+                            {{ $item->total_price }}
+                        )">Edit</button>
+
+                        <form action="{{ route('invoice.item.destroy', $item->id) }}" method="POST"
+                            onsubmit="return confirm('Hapus item ini?')" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-danger btn-sm">Hapus</button>
@@ -162,12 +190,75 @@
     </div>
 </div>
 
+{{-- ======================== --}}
+{{-- MODAL EDIT ITEM          --}}
+{{-- ======================== --}}
+<div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="editItemForm" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Qty</label>
+                        <input type="number" name="qty" id="edit_qty" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Description</label>
+                        <input type="text" name="description" id="edit_description" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Unit Price (Rp)</label>
+                        <input type="text" id="edit_unit_price_display" class="form-control" required>
+                        <input type="hidden" name="unit_price" id="edit_unit_price">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Total Price (Rp)</label>
+                        <input type="text" id="edit_total_price_display" class="form-control" readonly>
+                        <input type="hidden" name="total_price" id="edit_total_price">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Weight/pcs (kg)</label>
+                        <input type="number" step="0.01" name="weight_kg" id="edit_weight_kg" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Total Weight (kg)</label>
+                        <input type="text" id="edit_total_weight_display" class="form-control" readonly>
+                        <input type="hidden" name="total_weight" id="edit_total_weight">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+    // ======= TAMBAH ITEM =======
     const qtyInput = document.getElementById('qty');
+    const weightKgInput = document.getElementById('weight_kg');
     const unitPriceDisplay = document.getElementById('unit_price_display');
     const unitPriceHidden = document.getElementById('unit_price');
     const totalPriceDisplay = document.getElementById('total_price_display');
     const totalPriceHidden = document.getElementById('total_price');
+    const totalWeightDisplay = document.getElementById('total_weight_display');
+    const totalWeightHidden = document.getElementById('total_weight');
 
     function formatNumber(num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -176,9 +267,15 @@
     function calculateTotal() {
         let qty = parseInt(qtyInput.value) || 0;
         let unitPrice = parseInt(unitPriceHidden.value) || 0;
+        let weightKg = parseFloat(weightKgInput.value) || 0;
+
         let total = qty * unitPrice;
         totalPriceDisplay.value = formatNumber(total);
         totalPriceHidden.value = total;
+
+        let totalWeight = qty * weightKg;
+        totalWeightDisplay.value = totalWeight.toFixed(2);
+        totalWeightHidden.value = totalWeight.toFixed(2);
     }
 
     unitPriceDisplay.addEventListener('input', function () {
@@ -189,6 +286,60 @@
     });
 
     qtyInput.addEventListener('input', calculateTotal);
+    weightKgInput.addEventListener('input', calculateTotal);
+
+    // ======= EDIT ITEM MODAL =======
+    function openEditModal(id, qty, description, weightKg, unitPrice, totalPrice) {
+        document.getElementById('editItemForm').action = `/invoice/item/${id}`;
+        document.getElementById('edit_qty').value = qty;
+        document.getElementById('edit_description').value = description;
+        document.getElementById('edit_weight_kg').value = weightKg;
+
+        // Hitung total weight saat modal dibuka
+        let totalWeight = (qty * weightKg).toFixed(2);
+        document.getElementById('edit_total_weight_display').value = totalWeight;
+        document.getElementById('edit_total_weight').value = totalWeight;
+
+        document.getElementById('edit_unit_price_display').value = formatNumber(unitPrice);
+        document.getElementById('edit_unit_price').value = unitPrice;
+        document.getElementById('edit_total_price_display').value = formatNumber(totalPrice);
+        document.getElementById('edit_total_price').value = totalPrice;
+
+        new bootstrap.Modal(document.getElementById('editItemModal')).show();
+    }
+
+    const editQty = document.getElementById('edit_qty');
+    const editWeightKg = document.getElementById('edit_weight_kg');
+    const editUnitPriceDisplay = document.getElementById('edit_unit_price_display');
+    const editUnitPriceHidden = document.getElementById('edit_unit_price');
+    const editTotalPriceDisplay = document.getElementById('edit_total_price_display');
+    const editTotalPriceHidden = document.getElementById('edit_total_price');
+    const editTotalWeightDisplay = document.getElementById('edit_total_weight_display');
+    const editTotalWeightHidden = document.getElementById('edit_total_weight');
+
+    function calculateEditTotal() {
+        let qty = parseInt(editQty.value) || 0;
+        let unitPrice = parseInt(editUnitPriceHidden.value) || 0;
+        let weightKg = parseFloat(editWeightKg.value) || 0;
+
+        let total = qty * unitPrice;
+        editTotalPriceDisplay.value = formatNumber(total);
+        editTotalPriceHidden.value = total;
+
+        let totalWeight = qty * weightKg;
+        editTotalWeightDisplay.value = totalWeight.toFixed(2);
+        editTotalWeightHidden.value = totalWeight.toFixed(2);
+    }
+
+    editUnitPriceDisplay.addEventListener('input', function () {
+        let value = this.value.replace(/[^0-9]/g, "");
+        this.value = formatNumber(value);
+        editUnitPriceHidden.value = value;
+        calculateEditTotal();
+    });
+
+    editQty.addEventListener('input', calculateEditTotal);
+    editWeightKg.addEventListener('input', calculateEditTotal);
 </script>
 
 @endsection

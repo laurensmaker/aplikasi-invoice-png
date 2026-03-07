@@ -1,7 +1,17 @@
 @extends('backend.layouts.main')
 @section('content')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+@if(session('success'))
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Berhasil',
+    text: '{{ session('success') }}',
+    timer: 2000,
+    showConfirmButton: false
+});
+</script>
+@endif
 {{-- NOTIFIKASI SESSION --}}
 @if(session('success_add'))
     <script>Swal.fire({ icon: 'success', title: 'Berhasil!', text: "{{ session('success_add') }}", timer: 2000, showConfirmButton: false });</script>
@@ -134,7 +144,16 @@
                                                             href="{{ route('invoice.edit', $item->id) }}">
                                                             <i data-feather="edit-3" style="width:12px; height:12px;"></i> Edit
                                                         </a>
+                            
+                                                        <form action="{{ route('invoice.destroy', $item->id) }}" method="POST" class="delete-form">
+                                                            @csrf
+                                                            @method('DELETE')
 
+                                                            <button type="button" class="btn btn-danger btn-sm btn-delete">
+                                                                Hapus
+                                                            </button>
+                                                        </form>
+                                                
                                                     </div>
                                                 </td>
                                             </tr>
@@ -264,8 +283,9 @@
 </div>
 
 {{-- ===================== MODAL SURAT JALAN ===================== --}}
+{{-- ===================== MODAL SURAT JALAN ===================== --}}
 <div class="modal fade" id="modalSuratJalan" tabindex="-1" aria-labelledby="modalSuratJalanLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
 
             {{-- HEADER --}}
@@ -302,23 +322,29 @@
                     <input type="date" class="form-control" id="sj-tanggal-peb">
                 </div>
 
-                {{-- NOMOR POLISI --}}
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Nomor Polisi <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="sj-nomor-polisi" placeholder="Contoh: B 1234 ABC">
+                <hr>
+
+                {{-- ===================== KENDARAAN PENGANGKUT ===================== --}}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label fw-semibold">Kendaraan Pengangkut</label>
+                    <button type="button" class="btn btn-sm btn-success" id="add-kendaraan">
+                        <i class="ri-add-line"></i> Tambah Kendaraan
+                    </button>
                 </div>
 
-                {{-- NAMA SUPIR --}}
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Nama Supir <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="sj-nama-supir" placeholder="Nama lengkap supir">
-                </div>
-
-                {{-- JENIS KENDARAAN --}}
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Jenis Kendaraan <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="sj-jenis-kendaraan" placeholder="Contoh: Truk Box, Pickup, dll">
-                </div>
+                <table class="table table-bordered table-sm" id="kendaraan-table">
+                    <thead class="table-light">
+                        <tr class="text-center">
+                            <th>Nomor Polisi</th>
+                            <th>Nama Supir</th>
+                            <th>Jenis Kendaraan</th>
+                            <th style="width: 60px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{-- ROW DINAMIS AKAN MASUK DI SINI --}}
+                    </tbody>
+                </table>
 
             </div>
 
@@ -349,9 +375,8 @@
     <input type="hidden" name="surat_jalan_number" id="form-sj-number">
     <input type="hidden" name="nomor_peb" id="form-sj-nomor-peb">
     <input type="hidden" name="tanggal_peb" id="form-sj-tanggal-peb">
-    <input type="hidden" name="nomor_polisi" id="form-sj-nomor-polisi">
-    <input type="hidden" name="nama_supir" id="form-sj-nama-supir">
-    <input type="hidden" name="jenis_kendaraan" id="form-sj-jenis-kendaraan">
+
+    <!-- Dynamic kendaraan[] akan diinject oleh JS -->
 </form>
 
 <script>
@@ -446,71 +471,123 @@ document.getElementById('btn-simpan-packing').addEventListener('click', function
     document.getElementById('form-packing').submit();
 });
 
-// ======== MODAL SURAT JALAN ========
+// ===========================================
+// buka modal surat jalan
+// ===========================================
 document.querySelectorAll('.btn-surat-jalan').forEach(button => {
     button.addEventListener('click', function () {
+
         const invoiceId     = this.dataset.invoiceId;
         const invoiceNumber = this.dataset.invoiceNumber;
 
         document.getElementById('modal-sj-invoice-number').textContent      = invoiceNumber;
         document.getElementById('modal-sj-invoice-number-info').textContent = invoiceNumber;
-        document.getElementById('btn-simpan-sj').dataset.invoiceId          = invoiceId;
 
-        // Reset semua field
-        document.getElementById('sj-number').value          = '';
-        document.getElementById('sj-nomor-peb').value       = '';
-        document.getElementById('sj-tanggal-peb').value     = '';
-        document.getElementById('sj-nomor-polisi').value    = '';
-        document.getElementById('sj-nama-supir').value      = '';
-        document.getElementById('sj-jenis-kendaraan').value = '';
+        // inject invoice id ke tombol simpan
+        document.getElementById('btn-simpan-sj').dataset.invoiceId = invoiceId;
+
+        // reset all
+        document.getElementById('sj-number').value      = "";
+        document.getElementById('sj-nomor-peb').value   = "";
+        document.getElementById('sj-tanggal-peb').value = "";
+
+        // reset table kendaraan
+        document.querySelector('#kendaraan-table tbody').innerHTML = "";
     });
 });
 
-// ======== SIMPAN SURAT JALAN ========
+
+// ===========================================
+// tambah kendaraan (dynamic row)
+// ===========================================
+document.getElementById('add-kendaraan').addEventListener('click', function () {
+
+    const row = `
+        <tr>
+            <td><input type="text" class="form-control nomor-polisi" placeholder="B 1234 XYZ"></td>
+            <td><input type="text" class="form-control nama-supir" placeholder="Nama Supir"></td>
+            <td><input type="text" class="form-control jenis-kendaraan" placeholder="Truk Box / Pickup"></td>
+            <td class="text-center">
+                <button type="button" class="btn btn-danger btn-sm remove-row">
+                    <i class="ri-delete-bin-line"></i>
+                </button>
+            </td>
+        </tr>
+    `;
+
+    document.querySelector('#kendaraan-table tbody').insertAdjacentHTML('beforeend', row);
+});
+
+
+// ===========================================
+// hapus row kendaraan
+// ===========================================
+document.addEventListener('click', function (e) {
+    if (e.target.closest('.remove-row')) {
+        e.target.closest('tr').remove();
+    }
+});
+
+
+// ===========================================
+// simpan surat jalan (FINAL + FIXED)
+// ===========================================
 document.getElementById('btn-simpan-sj').addEventListener('click', function () {
-    const invoiceId      = this.dataset.invoiceId;
-    const sjNumber       = document.getElementById('sj-number').value;
-    const nomorPeb       = document.getElementById('sj-nomor-peb').value;
-    const tanggalPeb     = document.getElementById('sj-tanggal-peb').value;
-    const nomorPolisi    = document.getElementById('sj-nomor-polisi').value;
-    const namaSupir      = document.getElementById('sj-nama-supir').value;
-    const jenisKendaraan = document.getElementById('sj-jenis-kendaraan').value;
 
-    // Validasi semua field
-    if (!sjNumber.trim()) {
-        Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Nomor surat jalan wajib diisi.' });
-        return;
-    }
-    if (!nomorPeb.trim()) {
-        Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Nomor PEB wajib diisi.' });
-        return;
-    }
-    if (!tanggalPeb) {
-        Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Tanggal PEB wajib diisi.' });
-        return;
-    }
-    if (!nomorPolisi.trim()) {
-        Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Nomor polisi wajib diisi.' });
-        return;
-    }
-    if (!namaSupir.trim()) {
-        Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Nama supir wajib diisi.' });
-        return;
-    }
-    if (!jenisKendaraan.trim()) {
-        Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Jenis kendaraan wajib diisi.' });
-        return;
-    }
+    const invoiceId  = this.dataset.invoiceId;
+    const sjNumber   = document.getElementById('sj-number').value.trim();
+    const nomorPeb   = document.getElementById('sj-nomor-peb').value.trim();
+    const tanggalPeb = document.getElementById('sj-tanggal-peb').value.trim();
 
-    // Isi form hidden dan submit
-    document.getElementById('form-sj-invoice-id').value      = invoiceId;
-    document.getElementById('form-sj-number').value          = sjNumber;
-    document.getElementById('form-sj-nomor-peb').value       = nomorPeb;
-    document.getElementById('form-sj-tanggal-peb').value     = tanggalPeb;
-    document.getElementById('form-sj-nomor-polisi').value    = nomorPolisi;
-    document.getElementById('form-sj-nama-supir').value      = namaSupir;
-    document.getElementById('form-sj-jenis-kendaraan').value = jenisKendaraan;
-    document.getElementById('form-surat-jalan').submit();
+    // validasi utama
+    if (!sjNumber) return Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Nomor surat jalan wajib diisi.' });
+    if (!nomorPeb) return Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Nomor PEB wajib diisi.' });
+    if (!tanggalPeb) return Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Tanggal PEB wajib diisi.' });
+
+    // validasi kendaraan
+    const rows = document.querySelectorAll('#kendaraan-table tbody tr');
+    if (rows.length === 0)
+        return Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Minimal 1 kendaraan harus diinput.' });
+
+    let kendaraanList = [];
+    let hasError = false;
+
+    rows.forEach((row, i) => {
+        const nopol = row.querySelector('.nomor-polisi').value.trim();
+        const supir = row.querySelector('.nama-supir').value.trim();
+        const jenis = row.querySelector('.jenis-kendaraan').value.trim();
+
+        if (!nopol || !supir || !jenis) {
+            Swal.fire({ icon: 'warning', title: 'Perhatian!', text: `Semua field kendaraan baris ${i+1} wajib diisi.` });
+            hasError = true;
+        }
+
+        kendaraanList.push({ nomor_polisi: nopol, nama_supir: supir, jenis_kendaraan: jenis });
+    });
+
+    if (hasError) return;
+
+    // isi data utama ke form hidden
+    const form = document.getElementById('form-surat-jalan');
+    form.innerHTML = `
+        @csrf
+        <input type="hidden" name="invoice_id" value="${invoiceId}">
+        <input type="hidden" name="surat_jalan_number" value="${sjNumber}">
+        <input type="hidden" name="nomor_peb" value="${nomorPeb}">
+        <input type="hidden" name="tanggal_peb" value="${tanggalPeb}">
+    `;
+
+    // inject kendaraan[]
+    kendaraanList.forEach(k => {
+        form.innerHTML += `
+            <input type="hidden" name="nomor_polisi[]" value="${k.nomor_polisi}">
+            <input type="hidden" name="nama_supir[]" value="${k.nama_supir}">
+            <input type="hidden" name="jenis_kendaraan[]" value="${k.jenis_kendaraan}">
+        `;
+    });
+
+    // submit
+    form.submit();
 });
 
 // ======== FORMAT RUPIAH ========
@@ -521,5 +598,29 @@ function formatRupiah(angka) {
         minimumFractionDigits: 0
     }).format(angka);
 }
+
+
+document.querySelectorAll('.btn-delete').forEach(function(button){
+    button.addEventListener('click', function(e){
+
+        let form = this.closest("form");
+
+        Swal.fire({
+            title: 'Yakin ingin menghapus?',
+            text: "Data invoice akan dihapus permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+
+    });
+});
 </script>
 @endsection

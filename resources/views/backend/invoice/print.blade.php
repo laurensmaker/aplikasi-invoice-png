@@ -322,11 +322,12 @@
     <div class="signature-section">
         <table class="signature-table">
             <tr>
-               
-                {{-- <td>
-                    <div class="signature-line">Diterima Oleh</div>
-                    <div class="signature-title">{{ $invoice->to_company }}</div>
-                </td> --}}
+               <td></td>
+               <td></td>
+                <td>
+                    <div class="signature-line">SARIFUDIN</div>
+                    {{-- <div class="signature-title">{{ $invoice->to_company }}</div> --}}
+                </td>
             </tr>
         </table>
     </div>

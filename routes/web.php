@@ -16,6 +16,7 @@ Route::post('invoice-item', [InvoiceController::class, 'storeItem'])->name('invo
 Route::get('/invoice/{id}/edit', [InvoiceController::class, 'edit'])->name('invoice.edit');
 Route::put('/invoice/{id}', [InvoiceController::class, 'update'])->name('invoice.update');
 Route::delete('/invoice/item/{id}', [InvoiceController::class, 'destroyItem'])->name('invoice.item.destroy');
+Route::put('/invoice/item/{id}',        [InvoiceController::class, 'updateItem'])->name('invoice.updateItem');
 
 // routes/web.php
 Route::get('/invoice/{id}/print', [InvoiceController::class, 'printPdf'])->name('invoice.print');

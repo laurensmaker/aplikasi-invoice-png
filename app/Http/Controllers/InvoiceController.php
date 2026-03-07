@@ -67,6 +67,16 @@ class InvoiceController extends Controller
         return redirect()->route('invoice.edit', $invoiceId)
             ->with('success', 'Item berhasil dihapus!');
     }
+
+    public function destroy($id)
+    {
+        $item = Invoice::findOrFail($id);
+        $invoiceId = $item->invoice_id;
+        $item->delete();
+
+        return redirect()->route('invoice.index')
+            ->with('success', 'Item berhasil dihapus!');
+    }
    
 
     public function printPdf($id)
@@ -80,5 +90,29 @@ class InvoiceController extends Controller
                 ->setPaper('a4', 'portrait');
 
         return $pdf->download("Invoice-{$filename}.pdf");
+    }
+
+    public function updateItem(Request $request, $id)
+    {
+        $request->validate([
+            'qty'          => 'required|integer|min:1',
+            'description'  => 'required|string',
+            'weight_kg'    => 'required|numeric|min:0',
+            'total_weight' => 'required|numeric|min:0',
+            'unit_price'   => 'required|numeric',
+            'total_price'  => 'required|numeric',
+        ]);
+
+        $item = InvoiceItem::findOrFail($id);
+        $item->update([
+            'qty'          => $request->qty,
+            'description'  => $request->description,
+            'weight_kg'    => $request->weight_kg,
+            'total_weight' => $request->total_weight,
+            'unit_price'   => $request->unit_price,
+            'total_price'  => $request->total_price,
+        ]);
+
+        return redirect()->back()->with('success', 'Item berhasil diperbarui.');
     }
 }

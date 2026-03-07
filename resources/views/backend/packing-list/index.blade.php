@@ -67,7 +67,7 @@
                                     </td>                                    
                                     <td>
                                         <span class="fw-semibold">
-                                            {{ number_format($packing->invoice->items->sum('total_weight'), 2) }} kg
+                                            {{ number_format($packing->invoice->items->sum('total_weight'), 0) }} kg
                                         </span>
                                     </td>
                                     <td>
@@ -327,7 +327,7 @@ document.querySelectorAll('.btn-detail').forEach(button => {
         document.getElementById('modal-total-item').textContent   = items.length + ' item';
         document.getElementById('modal-total-qty').textContent    = totalQty;
         document.getElementById('modal-grand-total').textContent  = formatRupiah(grandTotal);
-        document.getElementById('modal-total-weight').textContent = totalWeight.toFixed(2) + ' kg';
+        document.getElementById('modal-total-weight').textContent = totalWeight.toFixed(0) + ' kg';
     });
 });
 

@@ -22,4 +22,9 @@ class SuratJalan extends Model
     {
         return $this->belongsTo(Invoice::class, 'invoice_id');
     }
+
+    public function pengangkutan()
+    {
+        return $this->hasMany(Pengangkutan::class, 'surat_jalan_id');
+    }
 }

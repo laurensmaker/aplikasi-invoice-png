@@ -267,11 +267,13 @@
             <td class="info-label">Jenis Kendaraan</td>            
           
         </tr>
-        <tr>
-            <td class="info-value" style="color: #c62828; font-weight: 700;">{{ $suratJalan->nomor_polisi }}</td>
-            <td class="info-value">{{ $suratJalan->nama_supir }}</td>
-            <td class="info-value">{{ $suratJalan->jenis_kendaraan }}</td>
-        </tr>
+        @foreach ($suratJalan->pengangkutan as $item)
+            <tr>
+                <td class="info-value" style="color: #c62828; font-weight: 700;">{{ $item->nomor_polisi }}</td>
+                <td class="info-value">{{ $item->nama_supir }}</td>
+                <td class="info-value">{{ $item->jenis_kendaraan }}</td>
+            </tr>            
+        @endforeach
     </table>
 
     {{-- ===== TABEL ITEMS ===== --}}
@@ -281,8 +283,8 @@
                 <th class="text-center" style="width: 5%;">#</th>
                 <th class="text-left">Deskripsi</th>
                 <th class="text-center" style="width: 10%;">Qty</th>
-                <th class="text-center" style="width: 18%;">Berat/unit (kg)</th>
-                <th class="text-center" style="width: 18%;">Total Berat (kg)</th>
+                {{-- <th class="text-center" style="width: 18%;">Berat/unit (kg)</th>
+                <th class="text-center" style="width: 18%;">Total Berat (kg)</th> --}}
             </tr>
         </thead>
         <tbody>
@@ -291,8 +293,8 @@
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td>{{ $item->description }}</td>
                     <td class="text-center">{{ $item->qty }}</td>
-                    <td class="text-center">{{ number_format($item->weight_kg, 2) }}</td>
-                    <td class="text-center">{{ number_format($item->total_weight, 2) }}</td>
+                    {{-- <td class="text-center">{{ number_format($item->weight_kg, 2) }}</td>
+                    <td class="text-center">{{ number_format($item->total_weight, 2) }}</td> --}}
                 </tr>
             @empty
                 <tr>
@@ -308,10 +310,10 @@
                 <td class="text-center">
                     <strong>{{ $suratJalan->invoice->items->sum('qty') }}</strong>
                 </td>
-                <td></td>
-                <td class="text-center">
-                    <strong>{{ number_format($suratJalan->invoice->items->sum('total_weight'), 2) }} kg</strong>
-                </td>
+                {{-- <td></td> --}}
+                {{-- <td class="text-center">
+                    <strong>{{ number_format($suratJalan->invoice->items->sum('total_weight'), 0) }} kg</strong>
+                </td> --}}
             </tr>
         </tfoot>
     </table>
@@ -319,20 +321,22 @@
     {{-- ===== TANDA TANGAN ===== --}}
     <div class="signature-section">
         <table class="signature-table">
-            {{-- <tr>
-                <td>
+            <tr>
+                {{-- <td>
                     <div class="signature-line">Pengirim</div>
                     <div class="signature-title">{{ $suratJalan->invoice->from_company }}</div>
                 </td>
                 <td>
                     <div class="signature-line">Supir</div>
                     <div class="signature-title">{{ $suratJalan->nama_supir }}</div>
-                </td>
+                </td> --}}
+                <td></td>
+                <td></td>
                 <td>
-                    <div class="signature-line">Penerima</div>
-                    <div class="signature-title">{{ $suratJalan->invoice->to_company }}</div>
+                    <div class="signature-line">SARIFUDIN</div>
+                    {{-- <div class="signature-title">Laurens</div> --}}
                 </td>
-            </tr> --}}
+            </tr>
         </table>
     </div>
 

@@ -249,7 +249,7 @@
                     <td>{{ $item->description }}</td>
                     <td class="text-center">{{ $item->qty }}</td>
                     <td class="text-center">{{ $item->weight_kg + 0 }}</td>
-                    <td class="text-center">{{ number_format($item->total_weight, 2) }}</td>
+                    <td class="text-center">{{ number_format($item->total_weight, 0) }}</td>
                 </tr>
             @empty
                 <tr>
@@ -267,7 +267,7 @@
                 </td>
                 <td></td>
                 <td class="text-center">
-                    <strong>{{ number_format($packing->invoice->items->sum('total_weight'), 2) }} kg</strong>
+                    <strong>{{ number_format($packing->invoice->items->sum('total_weight'), 0) }} kg</strong>
                 </td>
             </tr>
         </tfoot>
@@ -277,11 +277,12 @@
     <div class="signature-section">
         <table class="signature-table">
             <tr>
-{{--                 
+                <td></td>
+                <td></td>
                 <td>
-                    <div class="signature-line">Diterima Oleh</div>
-                    <div class="signature-title">{{ $packing->invoice->to_company }}</div>
-                </td> --}}
+                    <div class="signature-line">SARIFUDIN</div>
+                    {{-- <div class="signature-title">{{ $packing->invoice->to_company }}</div> --}}
+                </td>
             </tr>
         </table>
     </div>
