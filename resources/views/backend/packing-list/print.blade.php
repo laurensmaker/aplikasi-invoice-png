@@ -200,7 +200,7 @@
         <tr>
             <td style="width: 50%;">
                 <div class="brand-name">{{ $packing->invoice->from_company }}</div>
-                <div class="brand-sub">{{ $packing->invoice->from_address }}</div>
+                {{-- <div class="brand-sub">{{ $packing->invoice->from_address }}</div> --}}
             </td>
             <td style="width: 50%;">
                 <div class="packing-title">PACKING LIST</div>

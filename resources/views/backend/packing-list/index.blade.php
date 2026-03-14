@@ -229,12 +229,12 @@
                 </div>
 
                 {{-- CATATAN --}}
-                <div class="mt-3 p-3 border rounded bg-light">
+                {{-- <div class="mt-3 p-3 border rounded bg-light">
                     <p class="fw-semibold mb-1 small text-muted">CATATAN PENGIRIMAN:</p>
                     <p class="mb-0 small text-muted fst-italic">
                         Harap periksa kondisi barang saat diterima. Kerusakan setelah pengiriman bukan tanggung jawab pengirim.
                     </p>
-                </div>
+                </div> --}}
 
             </div>
 

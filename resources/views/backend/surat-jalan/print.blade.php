@@ -228,7 +228,7 @@
         <tr>
             <td style="width: 50%;">
                 <div class="brand-name">{{ $suratJalan->invoice->from_company }}</div>
-                <div class="brand-sub">{{ $suratJalan->invoice->from_address }}</div>
+                {{-- <div class="brand-sub">{{ $suratJalan->invoice->from_address }}</div> --}}
             </td>
             <td style="width: 50%;">
                 <div class="sj-title">SURAT JALAN</div>
