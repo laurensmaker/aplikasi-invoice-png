@@ -39,6 +39,12 @@
                             <span class="title">Data Surat Jalan</span>
                         </a>
                     </li>
+                    <li class="menu-item">
+                        <a href="{{ route('perusahaan.index') }}" class="menu-link">
+                            <i data-feather="truck" class="menu-icon tf-icons"></i>
+                            <span class="title">Data Companies</span>
+                        </a>
+                    </li>
                     {{-- <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle active">
                             <i data-feather="columns" class="menu-icon tf-icons"></i>

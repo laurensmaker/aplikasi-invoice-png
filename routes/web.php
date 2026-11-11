@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PackingListController;
+use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\SuratJalanController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,3 +33,5 @@ Route::get('/surat-jalan/{id}/edit', [SuratJalanController::class, 'edit'])->nam
 Route::put('/surat-jalan/{id}', [SuratJalanController::class, 'update'])->name('surat-jalan.update');
 Route::delete('/surat-jalan/{id}', [SuratJalanController::class, 'destroy'])->name('surat-jalan.destroy');
 Route::get('/surat-jalan/{id}/print', [SuratJalanController::class, 'print'])->name('surat-jalan.print');
+
+Route::resource('perusahaan', PerusahaanController::class);

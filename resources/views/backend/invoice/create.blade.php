@@ -47,7 +47,14 @@
 
                     <div class="col-lg-6 mb-3">
                         <label>To Company</label>
-                        <input type="text" name="to_company" class="form-control" required>
+                        <select name="to_company" class="form-control" required>
+                            <option value="" disabled selected>-- Select Company--</option>
+                            @foreach($companies as $company)
+                                <option value="{{ $company->name }}" {{ old('to_company') == $company->name ? 'selected' : '' }}>
+                                    {{ $company->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="col-lg-6 mb-3">
@@ -168,13 +175,22 @@
     const totalWeightDisplay = document.getElementById('total_weight_display');
     const totalWeightHidden  = document.getElementById('total_weight');
 
+    // FUNGSI FORMAT BARU (Titik untuk ribuan, Koma untuk desimal)
     function formatNumber(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        // Memisahkan bagian bulat dan desimal
+        let parts = num.toString().split(".");
+        
+        // Format bagian bulat dengan titik setiap 3 digit
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        
+        // Gabungkan kembali dengan koma jika ada desimal
+        return parts.join(",");
     }
 
     function calculateTotal() {
         let qty       = parseFloat(qtyInput.value) || 0;
-        let unitPrice = parseInt(unitPriceHidden.value) || 0;
+        // Ambil nilai hidden, ganti koma jadi titik agar bisa di-parse sebagai float
+        let unitPrice = parseFloat(unitPriceHidden.value) || 0; 
         let weightKg  = parseFloat(weightKgInput.value) || 0;
 
         // Hitung total price
@@ -184,14 +200,35 @@
 
         // Hitung total weight
         let totalWeight = qty * weightKg;
-        totalWeightDisplay.value = totalWeight % 1 === 0 ? totalWeight : totalWeight.toFixed(2);
+        // Format total weight juga agar konsisten (opsional)
+        totalWeightDisplay.value = totalWeight % 1 === 0 ? totalWeight : totalWeight.toFixed(2).replace(".", ",");
         totalWeightHidden.value  = totalWeight;
     }
 
     unitPriceDisplay.addEventListener('input', function () {
-        let value    = this.value.replace(/[^0-9]/g, "");
-        this.value   = formatNumber(value);
-        unitPriceHidden.value = value;
+        // 1. Hapus semua karakter selain angka dan koma
+        let value = this.value.replace(/[^0-9,]/g, "");
+        
+        // 2. Pastikan hanya ada satu koma
+        let parts = value.split(",");
+        if (parts.length > 2) {
+            value = parts[0] + "," + parts.slice(1).join("");
+        }
+
+        // 3. Format bagian ribuan (sebelum koma)
+        let integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        
+        // 4. Gabungkan kembali
+        let formattedValue = parts.length > 1 ? integerPart + "," + parts[1] : integerPart;
+        
+        // 5. Tampilkan ke input
+        this.value = formattedValue;
+
+        // 6. Simpan nilai asli (angka) ke hidden input untuk perhitungan
+        // Ganti titik (ribuan) dengan string kosong, dan koma dengan titik (desimal)
+        let rawValue = value.replace(/\./g, "").replace(",", ".");
+        unitPriceHidden.value = rawValue;
+
         calculateTotal();
     });
 

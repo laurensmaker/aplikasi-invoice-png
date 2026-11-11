@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\Perusahaan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceController extends Controller
 {
@@ -18,7 +19,8 @@ class InvoiceController extends Controller
 
     public function create(): View
     {
-        return view('backend.invoice.create');
+        $companies = Perusahaan::orderBy('name', 'asc')->get(); 
+        return view('backend.invoice.create', compact('companies'));
     }
 
     public function storeHeader(Request $request)
